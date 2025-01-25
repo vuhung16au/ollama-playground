@@ -1,5 +1,3 @@
-from lib2to3.fixes.fix_input import context
-
 import streamlit as st
 
 from langchain_community.document_loaders import PDFPlumberLoader
