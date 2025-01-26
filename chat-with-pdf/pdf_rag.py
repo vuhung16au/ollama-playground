@@ -14,7 +14,7 @@ Context: {context}
 Answer:
 """
 
-pdfs_directory = './pdfs/'
+pdfs_directory = 'chat-with-pdf/pdfs/'
 
 embeddings = OllamaEmbeddings(model="deepseek-r1:14b")
 vector_store = InMemoryVectorStore(embeddings)
