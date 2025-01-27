@@ -5,3 +5,4 @@ This repository contains the code for the projects I built using Ollama's open-s
 - [Chat with PDF](/chat-with-pdf/README.md)
 - [AI Scraper](/ai-scraper/README.md)
 - [Image Search](/image-search/README.md)
+- [OCR](/ocr/README.md)
