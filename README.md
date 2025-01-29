@@ -6,3 +6,4 @@ This repository contains the code for the projects I built using Ollama's open-s
 - [AI Scraper](/ai-scraper/README.md)
 - [Image Search](/image-search/README.md)
 - [OCR](/ocr/README.md)
+- [Object Detection](/object-detection/README.md)
