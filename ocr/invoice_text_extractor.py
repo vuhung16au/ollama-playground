@@ -25,7 +25,7 @@ res = ollama.chat(
             Date: The issue or transaction date.
             Vendor Name: The business or entity issuing the document.
             Items: A list of purchased products or services with Name, Quantity and price.""",
-            'images': ['ocr/images/your_file.jpg']
+            'images': ['images/your_file.jpg']
         }
     ],
     format=Invoice.model_json_schema(),
