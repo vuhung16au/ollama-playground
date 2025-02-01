@@ -8,3 +8,4 @@ This repository contains the code for the projects I built using Ollama's open-s
 - [OCR](/ocr/README.md)
 - [Object Detection](/object-detection/README.md)
 - [Emotion Detection](/emotion-detection/README.md)
+- [AI Researcher](/ai-researcher/README.md)
