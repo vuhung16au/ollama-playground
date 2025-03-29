@@ -1,15 +1,11 @@
-from itertools import chain
-from re import search
-
-import streamlit as st
-
-from langchain_ollama import ChatOllama
-from langchain_community.tools.tavily_search import TavilySearchResults
-from langgraph.graph import START, END, StateGraph
-from langchain_core.prompts import ChatPromptTemplate
-from typing_extensions import TypedDict
 import re
 
+import streamlit as st
+from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
+from langgraph.graph import START, END, StateGraph
+from typing_extensions import TypedDict
 
 summary_template = """
 Summarize the following content into a concise paragraph that directly addresses the query. Ensure the summary 
