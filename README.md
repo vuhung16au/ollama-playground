@@ -8,6 +8,7 @@ This repository contains the code for the projects I built using Ollama's open-s
 - [Voice RAG](/voice-rag/README.md)
 - [AI Scraper](/ai-scraper/README.md)
 - [AI Researcher](/ai-researcher/README.md)
+- [Video Summarization](/video-summarization/README.md)
 - [Image Search](/image-search/README.md)
 - [OCR](/ocr/README.md)
 - [Object Detection](/object-detection/README.md)
