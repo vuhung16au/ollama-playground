@@ -14,3 +14,4 @@ This repository contains the code for the projects I built using Ollama's open-s
 - [Object Detection](/object-detection/README.md)
 - [Emotion Detection](/emotion-detection/README.md)
 - [Text to SQL](/text-to-sql/README.md)
+- [AI Podcaster](/ai-podcaster/README.md)
