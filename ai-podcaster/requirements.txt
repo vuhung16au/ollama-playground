@@ -1,7 +1,22 @@
-streamlit
-langchain_core
-langchain_community
-langchain_ollama
-kokoro
-soundfile
-numpy
+streamlit==1.45.1
+langchain-core==0.3.65
+langchain-community==0.3.25
+langchain-ollama==0.3.3
+kokoro==0.9.4
+soundfile==0.13.1
+numpy==2.2.6
+
+# Required if generating Japanese, Chinese audio
+# pyopenjtalk
+
+# fugashi requires mecab 
+# https://taku910.github.io/mecab/
+# fugashi
+
+# jaconv
+# mojimoji
+# ordered_set
+# pypinyin
+# cn2an
+# jieba
+

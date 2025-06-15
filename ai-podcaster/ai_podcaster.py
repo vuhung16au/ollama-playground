@@ -8,25 +8,37 @@ from kokoro import KPipeline
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
 
-audios_directory = 'ai-podcaster/audios/'
+# Configuration
+audios_directory = './audios/'
+SUMMARY_WORD_LIMIT = 600
 
 supported_languages = {
-    '🇺🇸 American English': 'a',
     '🇬🇧 British English': 'b',
-    '🇪🇸 Spanish': 'e',
-    '🇫🇷 French': 'f',
-    '🇮🇳 Hindi': 'h',
-    '🇮🇹 Italian': 'i',
-    '🇯🇵 Japanese': 'j',
-    '🇧🇷 Brazilian Portuguese': 'p',
-    '🇨🇳 Mandarin Chinese': 'z'
+    # '🇺🇸 American English': 'a',
+    # '🇯🇵 Japanese': 'j',
+    # '🇨🇳 Mandarin Chinese': 'z'
+    # '🇪🇸 Spanish': 'e',
+    # '🇫🇷 French': 'f',
+    # '🇮🇳 Hindi': 'h',
+    # '🇮🇹 Italian': 'i',
+    # '🇧🇷 Brazilian Portuguese': 'p'
 }
 
 summary_template = """
-Summarize the following text by highlighting the key points.
-Maintain a conversational tone and keep the summary easy to follow for a general audience.
+Summarize the following text. Your summary should:
+1. Identify the central argument or main topic.
+2. List 2-3 supporting key points or pieces of evidence.
+3. Conclude with the main takeaway or implication.
+4. In less than {word_limit} words.
+Maintain a conversational tone and ensure the summary is accessible to a general audience.
 Text: {text}
 """
+
+# summary_template = """
+# Summarize the following text by highlighting the key points.
+# Maintain a conversational tone and keep the summary easy to follow for a general audience.
+# Text: {text}
+# """
 
 model = ChatOllama(model="deepseek-r1:8b")
 
@@ -50,7 +62,7 @@ def summarize_text(text):
     prompt = ChatPromptTemplate.from_template(summary_template)
     chain = prompt | model
 
-    summary = chain.invoke({"text": text})
+    summary = chain.invoke({"text": text, "word_limit": SUMMARY_WORD_LIMIT})
     return clean_text(summary.content)
 
 def clean_text(text):
@@ -60,7 +72,7 @@ def clean_text(text):
 st.title("AI Podcaster")
 
 language = st.selectbox("Select a language:", list(supported_languages.keys()), index=0)
-text = st.text_area("Enter text to generate audio:")
+text = st.text_area("Enter text to generate audio:", height=300)
 should_summarize = st.checkbox("Summarize text")
 button = st.button("Generate Audio")
 
