@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+audios/
+outputs/
+inputs/
+
+
 # C extensions
 *.so
 
@@ -203,3 +208,46 @@ models/
 
 # Streamlit
 .streamlit/
+
+# AI Podcaster specific
+# Generated audio outputs (uncomment if you want to ignore generated audio files)
+# outputs/audio/
+# audios/
+# *.mp3
+# *.wav
+# *.flac
+
+# Generated summaries and processing outputs
+outputs/summaries*/
+test_output/
+
+# LangChain and AI model cache
+.langchain/
+.cache/
+*.cache
+
+# Ollama specific
+ollama.log
+.ollama/
+
+# API keys and environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Large input datasets (if you want to exclude them)
+# inputs/
+# test_input/
+
+# Audio processing temporary files
+*.aiff
+*.au
+*.raw
+
+# Text processing cache
+*.pickle
+*.pkl
+
+.DS_Store
+*.DS_Store

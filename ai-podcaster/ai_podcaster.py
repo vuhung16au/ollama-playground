@@ -4,6 +4,7 @@ import re
 import numpy as np
 import soundfile as sf
 import streamlit as st
+import strip_markdown
 from kokoro import KPipeline
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
@@ -66,7 +67,10 @@ def summarize_text(text):
     return clean_text(summary.content)
 
 def clean_text(text):
+    # Remove <think>...</think> tags first
     cleaned_text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+    # Remove all markdown formatting using strip_markdown
+    cleaned_text = strip_markdown.strip_markdown(cleaned_text)
     return cleaned_text.strip()
 
 st.title("AI Podcaster")

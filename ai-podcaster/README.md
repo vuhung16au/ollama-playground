@@ -59,100 +59,327 @@ This will open a web browser where you can:
 For automated processing or batch operations, use the CLI version:
 
 ```bash
-python ai_podcaster_cli.py
+python ai_spotify.py
 ```
 
 #### CLI Features
 
-The CLI version automatically:
+The CLI version supports both single file and batch processing with flexible step control:
 
-1. **Reads input text** from `./inputs/input.md`
-2. **Summarizes the content** using the Deepseek model (limited to 600 words)
-3. **Saves the summary** to `./outputs/summary.txt`
-4. **Generates audio files** in supported languages to `./audios/` directory
+1. **Single File Mode**: Process individual Markdown files
+2. **Batch Mode**: Process entire folders of Markdown files
+3. **Step-based Processing**: Run summarization and audio generation separately or together
+4. **Summarizes content** using the Deepseek model
+5. **Generates audio files** in supported languages
+6. **Flexible output organization**
+
+#### Processing Steps
+
+The CLI now supports breaking the workflow into two distinct steps:
+
+- **Step 1**: Summarize Markdown files and save as text (.txt) files
+- **Step 2**: Convert text summaries to audio (.mp3) files
+- **Step All**: Run both steps sequentially (default behavior)
 
 #### CLI Configuration
 
 The CLI uses the following default settings:
 
-- **Input file**: `./inputs/input.md`
-- **Output directory**: `./audios/`
-- **Summary directory**: `./outputs/`
-- **Summary word limit**: 600 words
+- **Default input folder**: `./inputs/`
+- **Default output folder**: `./outputs/`
 - **Supported languages**: 🇺🇸 American English
-- **Audio format**: WAV files at 24kHz
+- **Audio format**: MP3 files at 24kHz
+- **Summary format**: Plain text (.txt files)
 
-#### Using the CLI
+#### CLI Usage Examples
 
-1. **Prepare your input**: Place your text content in `./inputs/input.md`
+##### Step-based Processing
 
-   ```bash
-   # Example: Copy your content to the input file
-   cp your-content.md ./inputs/input.md
-   ```
+The CLI now supports running individual steps or both together:
 
-2. **Run the CLI**:
+```bash
+# Run only Step 1: Summarize markdown to text
+python ai_spotify.py --step 1
 
-   ```bash
-   python ai_podcaster_cli.py
-   ```
+# Run only Step 2: Convert text to audio
+python ai_spotify.py --step 2
 
-3. **Check the outputs**:
-   - Summary: `./outputs/summary.txt`
-   - Audio: `./audios/audio_a.wav` (American English)
-
-#### CLI Output Example
-
-```text
-AI Podcaster CLI
-==================================================
-Reading input from: ./inputs/input.md
-Input text length: 5847 characters
-Summarizing text...
-Summary length: 542 characters
-Summary:
-------------------------------
-Vietnam's economy has transformed remarkably since 1975...
-------------------------------
-Summary saved to: ./outputs/summary.txt
-
-Generating audio files in 1 languages...
-Generating audio for audio_a.wav...
-✓ 🇺🇸 American English: audio_a.wav
-
-Completed! Generated 1 audio files:
-  - 🇺🇸 American English: ./audios/audio_a.wav
+# Run both steps (default behavior)
+python ai_spotify.py --step all
+# or simply
+python ai_spotify.py
 ```
 
-#### Customizing the CLI
+##### Single File Processing
 
-To modify the CLI behavior, you can edit the configuration variables at the top of `ai_podcaster_cli.py`:
+Process a single Markdown file with step control:
 
-- `INPUT_FILE`: Change the input file path
-- `AUDIOS_DIRECTORY`: Change the audio output directory
-- `SUMMARISATION_FOLDER`: Change the summary output directory
-- `SUMMARY_WORD_LIMIT`: Adjust the summary length limit
-- `supported_languages`: Add or modify language options
+```bash
+# Basic single file processing (both steps)
+python ai_spotify.py --input-file inputs/article.md
+
+# Single file - Step 1 only (summarize only)
+python ai_spotify.py --input-file inputs/article.md --step 1
+
+# Single file - Step 2 only (audio generation only)
+python ai_spotify.py --input-file inputs/article.md --step 2
+
+# Single file with custom output folder
+python ai_spotify.py --input-file inputs/article.md --output-folder outputs/my-content --step all
+
+# Process specific file from data mining collection
+python ai_spotify.py --input-file inputs/data-mining-real-world-applications/fraud-detection.md --step 1
+```
+
+##### Batch Folder Processing
+
+Process all Markdown files in a folder with step control:
+
+```bash
+# Process all files in default inputs folder (both steps)
+python ai_spotify.py --input-folder inputs/
+
+# Batch processing - Step 1 only (summarize all files)
+python ai_spotify.py --input-folder inputs/data-mining-real-world-applications --step 1
+
+# Batch processing - Step 2 only (generate audio for all existing summaries)
+python ai_spotify.py --input-folder inputs/data-mining-real-world-applications --step 2
+
+# Process specific folder with both steps
+python ai_spotify.py --input-folder inputs/data-mining-real-world-applications --step all
+
+# Batch processing with custom output
+python ai_spotify.py --input-folder inputs/articles --output-folder outputs/podcasts --step all
+
+# Legacy commands (still supported)
+python ai_spotify.py -d inputs/articles -o outputs/podcasts
+```
+
+##### Advanced Workflow Examples
+
+```bash
+# Workflow 1: Summarize all files first, then generate audio later
+python ai_spotify.py --input-folder inputs/articles --step 1
+# ... review summaries if needed ...
+python ai_spotify.py --input-folder inputs/articles --step 2
+
+# Workflow 2: Process different folders separately
+python ai_spotify.py --input-folder inputs/tech-articles --output-folder outputs/tech --step 1
+python ai_spotify.py --input-folder inputs/business-articles --output-folder outputs/business --step 1
+# Then generate audio for both
+python ai_spotify.py --input-folder inputs/tech-articles --output-folder outputs/tech --step 2
+python ai_spotify.py --input-folder inputs/business-articles --output-folder outputs/business --step 2
+
+# Workflow 3: Quick single file processing
+python ai_spotify.py --input-file inputs/urgent-article.md --step all
+```
+
+#### Output Structure
+
+The CLI organizes outputs differently based on processing mode:
+
+##### Single File Mode Output Structure
+
+```text
+outputs/
+├── summaries/
+│   └── filename.txt        # Summary of the processed file
+└── audio/
+    └── filename.mp3        # Audio version of the summary
+```
+
+##### Batch Mode Output Structure
+
+```text
+outputs/
+├── summaries/
+│   └── folder-name/        # Named after input folder
+│       ├── file1.txt       # Individual summaries
+│       ├── file2.txt
+│       └── file3.txt
+└── audio/
+    └── folder-name/        # Named after input folder
+        ├── file1.mp3       # Individual audio files
+        ├── file2.mp3
+        └── file3.mp3
+```
+
+#### CLI Output Examples
+
+##### Example 1: Running Both Steps (Default)
+
+```text
+AI Podcaster CLI - Processor
+============================================================
+Processing mode: Both Steps: Summarize and Generate Audio
+Mode: Single file processing
+Input file: inputs/data-mining-real-world-applications/fraud-detection.md
+Output folder: outputs
+Step: all
+Languages: 🇺🇸 American English
+
+Processing single file: fraud-detection.md
+
+============================================================
+Processing: fraud-detection.md (Step: all)
+============================================================
+STEP 1: Summarizing fraud-detection.md
+============================================================
+Input text length: 3847 characters (650 words)
+Generating summary...
+✅ Summary generated successfully with 284 words
+Summary length: 1542 characters (284 words)
+Summary preview: Fraud detection represents one of the most critical applications of data mining in financial services...
+Summary saved to: outputs/summaries/fraud-detection.txt
+✅ Step 1 completed: Summary saved to outputs/summaries/fraud-detection.txt
+
+============================================================
+STEP 2: Generating audio for fraud-detection.txt
+============================================================
+Generating audio files...
+Generating audio for fraud-detection.mp3...
+Audio saved to: outputs/audio/fraud-detection.mp3
+✓ 🇺🇸 American English: fraud-detection.mp3
+✅ Step 2 completed: 1 audio files generated
+
+============================================================
+PROCESSING COMPLETE
+============================================================
+Summary saved to: outputs/summaries
+Audio files generated: 1
+Audio files saved to: outputs/audio
+
+✅ Processing completed successfully!
+```
+
+##### Example 2: Running Step 1 Only (Summarization)
+
+```text
+AI Podcaster CLI - Processor
+============================================================
+Processing mode: Step 1: Summarize Markdown to Text
+Mode: Batch folder processing
+Input folder: inputs/data-mining-real-world-applications
+Output folder: outputs
+Folder name: data-mining-real-world-applications
+Step: 1
+Languages: 🇺🇸 American English
+
+Found 20 Markdown files:
+  1. 01 Cross-selling and Up-selling.md
+  2. 02 Data mining applications in Cross-selling and Up-selling.md
+  ...
+
+Processing 20 files automatically...
+
+[1/20] Processing files...
+
+============================================================
+Processing: 01 Cross-selling and Up-selling.md (Step: 1)
+============================================================
+Input text length: 4256 characters (721 words)
+Generating summary...
+✅ Summary generated successfully with 312 words
+Summary length: 1689 characters (312 words)
+Summary preview: Cross-selling and up-selling represent fundamental strategies in modern business...
+Summary saved to: outputs/summaries/data-mining-real-world-applications/01 Cross-selling and Up-selling.txt
+✅ Step 1 completed: Summary saved to outputs/summaries/data-mining-real-world-applications/01 Cross-selling and Up-selling.txt
+
+============================================================
+PROCESSING COMPLETE
+============================================================
+Total files processed: 20/20
+Summary files saved to: outputs/summaries/data-mining-real-world-applications
+
+✅ Processing completed successfully!
+```
+
+##### Example 3: Running Step 2 Only (Audio Generation)
+
+```text
+AI Podcaster CLI - Processor
+============================================================
+Processing mode: Step 2: Convert Text to Audio
+Mode: Batch folder processing
+Input folder: inputs/data-mining-real-world-applications
+Output folder: outputs
+Folder name: data-mining-real-world-applications
+Step: 2
+Languages: 🇺🇸 American English
+
+Found 20 Markdown files:
+  1. 01 Cross-selling and Up-selling.md
+  2. 02 Data mining applications in Cross-selling and Up-selling.md
+  ...
+
+Processing 20 files automatically...
+
+[1/20] Processing files...
+
+============================================================
+Processing: 01 Cross-selling and Up-selling.md (Step: 2)
+============================================================
+STEP 2: Generating audio for 01 Cross-selling and Up-selling.txt
+============================================================
+Generating audio files...
+Generating audio for 01 Cross-selling and Up-selling.mp3...
+Audio saved to: outputs/audio/data-mining-real-world-applications/01 Cross-selling and Up-selling.mp3
+✓ 🇺🇸 American English: 01 Cross-selling and Up-selling.mp3
+✅ Step 2 completed: 1 audio files generated
+
+============================================================
+PROCESSING COMPLETE
+============================================================
+Total files processed: 20/20
+Total audio files generated: 20
+Audio files saved to: outputs/audio/data-mining-real-world-applications
+
+✅ Processing completed successfully!
+```
+
+#### Command Line Options
+
+- `--input-file FILE`: Process a single Markdown file
+- `--input-folder FOLDER`: Process all Markdown files in a folder (default: `./inputs/`)
+- `--output-folder FOLDER`: Set output directory (default: `./outputs/`)
+- `--step {1,2,all}`: Processing step control:
+  - `1`: Only summarize markdown to text
+  - `2`: Only convert text to audio
+  - `all`: Run both steps (default)
+- Legacy options: `-d FOLDER`, `-o FOLDER` (still supported)
+
+#### Supported File Formats
+
+- **Input**: `.md`, `.markdown` files
+- **Summary Output**: `.txt` files (plain text)
+- **Audio Output**: `.mp3` files (24kHz, mono)
 
 ## Project Structure
 
 ```text
 ai-podcaster/
 ├── ai_podcaster.py          # Streamlit web app
-├── ai_podcaster_cli.py      # Command line interface
+├── ai_spotify.py            # Command line interface (main CLI)
+├── ai_podcaster_cli.py      # Legacy CLI interface
 ├── requirements.txt         # Python dependencies
 ├── inputs/                  # Input text files
-│   ├── input.md            # Default CLI input file
-│   └── input-vn-eco.md     # Example Vietnamese economy content
-├── outputs/                 # Generated summaries
-│   └── summary.txt         # CLI output summary
-└── audios/                 # Generated audio files
-    └── audio.wav           # Generated audio files
+│   ├── data-mining-real-world-applications/  # Sample data mining articles
+│   │   ├── 01 Cross-selling and Up-selling.md
+│   │   ├── 02 Data mining applications...md
+│   │   └── ...
+│   └── input.md            # Default legacy CLI input file
+├── outputs/                 # Generated content
+│   ├── summaries/          # Text summaries
+│   │   └── folder-name/    # Organized by input folder
+│   └── audio/              # Generated audio files
+│       └── folder-name/    # Organized by input folder
+└── audios/                 # Legacy audio output directory
+    └── audio.wav           # Legacy generated audio files
 ```
 
 ## Troubleshooting
 
-- **Input file not found**: Ensure `./inputs/input.md` exists when using the CLI
+- **Input file not found**: Ensure input files exist when using the CLI
 - **Audio generation fails**: Check that you have sufficient disk space and write permissions
 - **Model errors**: Verify that Ollama is running and the Deepseek model is installed
 - **Dependency issues**: Make sure all requirements are installed in your virtual environment

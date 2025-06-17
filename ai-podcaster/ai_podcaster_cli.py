@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 import soundfile as sf
+from pydub import AudioSegment
 from kokoro import KPipeline
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_ollama import ChatOllama
@@ -14,7 +15,7 @@ INPUT_FILE = './inputs/input.md'
 AUDIOS_DIRECTORY = './audios/'
 SUMMARISATION_FOLDER = './outputs/'
 SUMMARISATION_FILE = 'summary.txt'
-SUMMARY_WORD_LIMIT = 600
+SUMMARY_WORD_LIMIT = 1200
 
 supported_languages = {
     # '🇬🇧 British English': 'b',
@@ -81,9 +82,19 @@ def generate_audio(text, lang_code, output_filename):
     # Ensure output directory exists
     os.makedirs(AUDIOS_DIRECTORY, exist_ok=True)
     
-    # Write audio file
+    # Create temporary WAV file
     output_path = os.path.join(AUDIOS_DIRECTORY, output_filename)
-    sf.write(output_path, full_audio, 24000)
+    temp_wav_path = output_path.replace('.mp3', '_temp.wav')
+    
+    # Write audio to temporary WAV file
+    sf.write(temp_wav_path, full_audio, 24000)
+    
+    # Convert WAV to MP3 using pydub
+    audio_segment = AudioSegment.from_wav(temp_wav_path)
+    audio_segment.export(output_path, format="mp3")
+    
+    # Clean up temporary WAV file
+    os.remove(temp_wav_path)
     
     print(f"Audio saved to: {output_path}")
     return output_path
@@ -118,7 +129,7 @@ def main():
     
     output_files = []
     for language_name, lang_code in supported_languages.items():
-        output_filename = f"audio_{lang_code}.wav"
+        output_filename = f"audio_{lang_code}.mp3"
         try:
             output_path = generate_audio(summarized_text, lang_code, output_filename)
             output_files.append((language_name, output_path))
