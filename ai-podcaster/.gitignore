@@ -6,7 +6,12 @@ __pycache__/
 audios/
 outputs/
 inputs/
+benchmarks/
+logs/
+metrics/
 
+
+.DS_Store
 
 # C extensions
 *.so

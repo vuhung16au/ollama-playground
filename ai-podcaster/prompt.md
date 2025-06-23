@@ -1,3 +1,80 @@
+# Add the following metrics
+
+Memory Usage: Peak RAM consumption during inference
+GPU Utilization: If using GPU acceleration
+CPU Usage: Average CPU utilization percentage
+Model Size: Disk space required for each model
+Load Time: Time to load model into memory
+Response Quality Score: Leave it as "TBC" (hard-coded)
+Relevance Score: Leave it as "TBC" (hard-coded)
+
+to the benchmark results:
+
+token_benchmark_report.md
+token_benchmark_report.json
+
+# Add timestamp to .md and .json files
+
+token_benchmark_report-{timestamp}.md
+token_benchmark_results-{timestamp}.json
+
+# Save the responses of the models to 
+
+`./benchmarks/response-{model name}-{timestamp}.txt`
+
+# Read the content of the file #file:Text-to-be-summarised.txt  and set it to 
+`test_prompts` (only one long prompt)
+``` 
+test_prompts = [
+    "Write a haiku about programming.",
+    "Explain the difference between machine learning and deep learning in 150 words.",
+    "Write a Python function that calculates the Fibonacci sequence up to n terms.",
+    "Describe the plot of a science fiction movie in exactly 100 words."
+]
+
+``` 
+
+# Print `model-tts` values to file `metrics/runtime.csv`
+
+Current `model-tts` values: blank
+
+New `model-tts` values: 
+
+- if `step` = 1 then fill `model-tts` with the value `model = ChatOllama(model="deepseek-r1:8b")`
+- if `step` = 2 then fill `model-tts` with the fixed value "Kokoro 80M"
+
+# Add "model", "model-tts" to the header of `runtime.csv`
+
+current header: 
+input_file_name,step,start_time,end_time,duration_seconds
+
+new header: 
+input_file_name,step, model-tts, start_time,end_time,duration_seconds
+
+# add model name as the suffixes to output files 
+
+e.g 
+
+when model: `deepseek-r1:8b`
+Input file: `Cross-selling and Up-selling.md`
+
+Output summary file: `Cross-selling and Up-selling_deepseek-r1-8b.txt`
+Output audio file: `Cross-selling and Up-selling_deepseek-r1-8b.mp3`
+
+# run time metrics 
+
+I want to 
+
+- print the results in a log file `logs/ai_spotify.txt` 
+- print run time for each step (1, 2) for each input files 
+- save the run time to file `metrics/runtime.csv` 
+
+`metrics/runtime.csv` contains the following columns:
+
+```
+file_name, step, start_time, end_time, duration_seconds
+```
+
 # add command line options to the script to handle a whole folder of .md files or single .md file
 
 e.g 

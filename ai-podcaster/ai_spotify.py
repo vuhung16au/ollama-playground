@@ -4,6 +4,9 @@ import sys
 import argparse
 from pathlib import Path
 import glob
+import time
+import csv
+from datetime import datetime
 
 import numpy as np
 import soundfile as sf
@@ -16,6 +19,38 @@ import strip_markdown
 # Configuration
 DEFAULT_INPUT_FOLDER = 'inputs'
 DEFAULT_OUTPUT_FOLDER = 'outputs'
+
+def ensure_directories():
+    """Create necessary directories if they don't exist"""
+    os.makedirs('logs', exist_ok=True)
+    os.makedirs('metrics', exist_ok=True)
+
+def log_message(message):
+    """Write message to log file with timestamp"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    with open('logs/ai_spotify.txt', 'a', encoding='utf-8') as f:
+        f.write(f"[{timestamp}] {message}\n")
+    print(message)  # Also print to console
+
+def save_runtime_metric(input_file_name, step, start_time, end_time, duration_seconds, model_tts):
+    """Save runtime metric to CSV file"""
+    file_exists = os.path.exists('metrics/runtime.csv')
+    
+    with open('metrics/runtime.csv', 'a', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        
+        # Write header if file doesn't exist
+        if not file_exists:
+            writer.writerow(['input_file_name', 'step', 'start_time', 'end_time', 'duration_seconds', 'model-tts'])
+        
+        writer.writerow([
+            input_file_name,
+            step,
+            start_time.strftime("%Y-%m-%d %H:%M:%S"),
+            end_time.strftime("%Y-%m-%d %H:%M:%S"),
+            round(duration_seconds, 3),
+            model_tts
+        ])
 
 supported_languages = {
     # '🇬🇧 British English': 'b',
@@ -44,6 +79,8 @@ Requirements:
 - Keep the audience engaged throughout
 - Your summary is for a podcast
 - Your summary must be in a single paragraph
+- Your summary must be shorter than 500 words
+- Skip all the links (http, https, www) and references in the text
 
 Sample `Executive Summary` responses: 
 
@@ -60,8 +97,9 @@ Text: {text}
 
 # Initialize the model
 # smollm2:1.7b 
+# model = ChatOllama(model="smollm2:1.7b")
+# model = ChatOllama(model="deepseek-r1:1.5b")
 model = ChatOllama(model="deepseek-r1:8b")
-# model  = ChatOllama(model="deepseek-r1:1.5b", temperature=0.1, max_tokens=2000, top_p=0.9, top_k=40, stop=["</think>"])
 
 def count_words(text):
     """Count the number of words in a text string."""
@@ -158,28 +196,39 @@ def save_summary(summary_text, output_path):
 
 def step1_summarize_file(input_file_path, output_folder):
     """Step 1: Summarize a markdown file and save as text."""
+    # Ensure directories exist
+    ensure_directories()
+    
+    # Get input file name for logging
+    input_file_name = os.path.basename(input_file_path)
+    
+    # Start timing
+    step1_start = datetime.now()
+    
     print(f"\n{'='*60}")
-    print(f"STEP 1: Summarizing {os.path.basename(input_file_path)}")
+    print(f"STEP 1: Summarizing {input_file_name}")
     print(f"{'='*60}")
+    
+    log_message(f"Step 1 starting for {input_file_name}")
     
     # Read input file
     text = read_input_file(input_file_path)
     if text is None:
-        print(f"Skipping {input_file_path} due to read error")
+        log_message(f"Skipping {input_file_name} due to read error")
         return False
     
     # Check if input file has content
     input_word_count = count_words(text)
-    print(f"Input text length: {len(text)} characters ({input_word_count} words)")
+    log_message(f"Input text length: {len(text)} characters ({input_word_count} words)")
     
     # Summarize text
     summarized_text = summarize_text(text)
     summary_word_count = count_words(summarized_text)
-    print(f"Summary length: {len(summarized_text)} characters ({summary_word_count} words)")
+    log_message(f"Summary length: {len(summarized_text)} characters ({summary_word_count} words)")
     
     # Show a preview of the summary
     preview = summarized_text[:200] + "..." if len(summarized_text) > 200 else summarized_text
-    print(f"Summary preview: {preview}")
+    log_message(f"Summary preview: {preview}")
     
     # Get base filename without extension
     base_filename = os.path.basename(input_file_path)
@@ -194,29 +243,49 @@ def step1_summarize_file(input_file_path, output_folder):
     
     # Save summary
     save_summary(summarized_text, summary_path)
-    print(f"✅ Step 1 completed: Summary saved to {summary_path}")
+    
+    # End timing and log
+    step1_end = datetime.now()
+    step1_duration = (step1_end - step1_start).total_seconds()
+    
+    log_message(f"Step 1 completed for {input_file_name} in {step1_duration:.3f} seconds")
+    log_message(f"✅ Step 1 completed: Summary saved to {summary_path}")
+    
+    # Save runtime metric
+    save_runtime_metric(input_file_name, "step_1", step1_start, step1_end, step1_duration, "deepseek-r1:8b")
     
     return True
 
 def step2_generate_audio_from_text(text_file_path, output_folder):
     """Step 2: Generate audio from a text file."""
+    # Ensure directories exist
+    ensure_directories()
+    
+    # Get input file name for logging
+    input_file_name = os.path.basename(text_file_path)
+    
+    # Start timing
+    step2_start = datetime.now()
+    
     print(f"\n{'='*60}")
-    print(f"STEP 2: Generating audio for {os.path.basename(text_file_path)}")
+    print(f"STEP 2: Generating audio for {input_file_name}")
     print(f"{'='*60}")
+    
+    log_message(f"Step 2 starting for {input_file_name}")
     
     # Read text file
     try:
         with open(text_file_path, 'r', encoding='utf-8') as file:
             text_content = file.read().strip()
     except FileNotFoundError:
-        print(f"Error: Text file '{text_file_path}' not found.")
+        log_message(f"Error: Text file '{text_file_path}' not found.")
         return 0
     except Exception as e:
-        print(f"Error reading text file '{text_file_path}': {e}")
+        log_message(f"Error reading text file '{text_file_path}': {e}")
         return 0
     
     if not text_content:
-        print(f"Warning: Text file '{text_file_path}' is empty.")
+        log_message(f"Warning: Text file '{text_file_path}' is empty.")
         return 0
     
     # Get base filename without extension
@@ -227,7 +296,7 @@ def step2_generate_audio_from_text(text_file_path, output_folder):
     audio_folder = os.path.join(output_folder, 'audio')
     
     # Generate audio files
-    print(f"Generating audio files...")
+    log_message(f"Generating audio files...")
     
     output_files = []
     for language_name, lang_code in supported_languages.items():
@@ -237,18 +306,35 @@ def step2_generate_audio_from_text(text_file_path, output_folder):
         try:
             output_path = generate_audio(text_content, lang_code, audio_path)
             output_files.append((language_name, output_path))
-            print(f"✓ {language_name}: {audio_filename}")
+            log_message(f"✓ {language_name}: {audio_filename}")
         except Exception as e:
-            print(f"✗ Error generating {language_name} audio: {e}")
+            log_message(f"✗ Error generating {language_name} audio: {e}")
     
-    print(f"✅ Step 2 completed: {len(output_files)} audio files generated")
+    # End timing and log
+    step2_end = datetime.now()
+    step2_duration = (step2_end - step2_start).total_seconds()
+    
+    log_message(f"Step 2 completed for {input_file_name} in {step2_duration:.3f} seconds")
+    log_message(f"✅ Step 2 completed: {len(output_files)} audio files generated")
+    
+    # Save runtime metric
+    save_runtime_metric(input_file_name, "step_2", step2_start, step2_end, step2_duration, "Kokoro 80M")
+    
     return len(output_files)
 
 def process_single_file(input_file_path, output_folder, step='all'):
     """Process a single markdown file with specified step(s)."""
+    # Ensure directories exist
+    ensure_directories()
+    
+    # Get input file name for logging
+    input_file_name = os.path.basename(input_file_path)
+    
     print(f"\n{'='*60}")
-    print(f"Processing: {os.path.basename(input_file_path)} (Step: {step})")
+    print(f"Processing: {input_file_name} (Step: {step})")
     print(f"{'='*60}")
+    
+    log_message(f"Starting processing for file: {input_file_name}")
     
     # Get base filename without extension
     base_filename = os.path.basename(input_file_path)
@@ -265,6 +351,7 @@ def process_single_file(input_file_path, output_folder, step='all'):
         # Step 1: Summarize markdown to text
         success = step1_summarize_file(input_file_path, output_folder)
         if not success:
+            log_message(f"Failed to process step 1 for {input_file_name}")
             return None
     
     if step in ['2', 'all']:
@@ -272,18 +359,27 @@ def process_single_file(input_file_path, output_folder, step='all'):
         if step == '2':
             # If only running step 2, check if summary file exists
             if not os.path.exists(summary_path):
-                print(f"Error: Summary file '{summary_path}' not found. Run step 1 first.")
+                log_message(f"Error: Summary file '{summary_path}' not found. Run step 1 first.")
                 return None
         
         audio_count = step2_generate_audio_from_text(summary_path, output_folder)
     
+    log_message(f"Successfully completed processing for {input_file_name}")
     return audio_count
 
 def process_file(input_file_path, output_folder, folder_name, step='all'):
     """Process a single markdown file with specified step(s)."""
+    # Ensure directories exist
+    ensure_directories()
+    
+    # Get input file name for logging
+    input_file_name = os.path.basename(input_file_path)
+    
     print(f"\n{'='*60}")
-    print(f"Processing: {os.path.basename(input_file_path)} (Step: {step})")
+    print(f"Processing: {input_file_name} (Step: {step})")
     print(f"{'='*60}")
+    
+    log_message(f"Starting processing for file: {input_file_name}")
     
     # Get base filename without extension
     base_filename = os.path.basename(input_file_path)
@@ -298,74 +394,27 @@ def process_file(input_file_path, output_folder, folder_name, step='all'):
     
     if step in ['1', 'all']:
         # Step 1: Summarize markdown to text
-        # Read input file
-        text = read_input_file(input_file_path)
-        if text is None:
-            print(f"Skipping {input_file_path} due to read error")
+        success = step1_summarize_file(input_file_path, output_folder)
+        if not success:
+            log_message(f"Failed to process step 1 for {input_file_name}")
             return None
-        
-        # Check if input file has content
-        input_word_count = count_words(text)
-        print(f"Input text length: {len(text)} characters ({input_word_count} words)")
-        
-        # Summarize text
-        summarized_text = summarize_text(text)
-        summary_word_count = count_words(summarized_text)
-        print(f"Summary length: {len(summarized_text)} characters ({summary_word_count} words)")
-        
-        # Show a preview of the summary
-        preview = summarized_text[:200] + "..." if len(summarized_text) > 200 else summarized_text
-        print(f"Summary preview: {preview}")
-        
-        # Save summary
-        save_summary(summarized_text, summary_path)
-        print(f"✅ Step 1 completed: Summary saved to {summary_path}")
     
     if step in ['2', 'all']:
         # Step 2: Generate audio from text
         if step == '2':
             # If only running step 2, check if summary file exists
             if not os.path.exists(summary_path):
-                print(f"Error: Summary file '{summary_path}' not found. Run step 1 first.")
+                log_message(f"Error: Summary file '{summary_path}' not found. Run step 1 first.")
                 return None
         
-        # Read text file
-        try:
-            with open(summary_path, 'r', encoding='utf-8') as file:
-                text_content = file.read().strip()
-        except FileNotFoundError:
-            print(f"Error: Summary file '{summary_path}' not found.")
-            return None
-        except Exception as e:
-            print(f"Error reading summary file '{summary_path}': {e}")
-            return None
-        
-        if not text_content:
-            print(f"Warning: Summary file '{summary_path}' is empty.")
-            return None
-        
-        # Create audio output paths
-        audio_folder = os.path.join(output_folder, 'audio')
-        
-        # Generate audio files
-        print(f"Generating audio files...")
-        
-        output_files = []
-        for language_name, lang_code in supported_languages.items():
-            audio_filename = f"{filename_without_ext}.mp3"
-            audio_path = os.path.join(audio_folder, audio_filename)
-            
-            try:
-                output_path = generate_audio(text_content, lang_code, audio_path)
-                output_files.append((language_name, output_path))
-                print(f"✓ {language_name}: {audio_filename}")
-            except Exception as e:
-                print(f"✗ Error generating {language_name} audio: {e}")
-        
-        audio_count = len(output_files)
-        print(f"✅ Step 2 completed: {audio_count} audio files generated")
+        audio_count = step2_generate_audio_from_text(summary_path, output_folder)
     
+    log_message(f"Successfully completed processing for {input_file_name}")
     return audio_count
+
+# ...existing code...
+
+# ...existing code...
 
 def parse_arguments():
     """Parse command line arguments."""
@@ -448,8 +497,13 @@ Examples:
 
 def main():
     """Main function to orchestrate the CLI workflow."""
+    # Ensure directories exist
+    ensure_directories()
+    
     print("AI Podcaster CLI - Processor")
     print("=" * 60)
+    
+    log_message("AI Podcaster CLI - Processor started")
     
     # Parse command line arguments
     args = parse_arguments()
@@ -462,6 +516,7 @@ def main():
     }
     
     print(f"Processing mode: {step_descriptions[args.step]}")
+    log_message(f"Processing mode: {step_descriptions[args.step]}")
     
     # Determine input mode
     if args.input_file:
@@ -488,24 +543,39 @@ def main():
         print(f"\nProcessing single file: {os.path.basename(input_file)}")
         
         try:
+            # Log start time
+            start_time = datetime.now()
+            log_message(f"Processing started for {os.path.basename(input_file)} (Step: {args.step})")
+            
             audio_count = process_single_file(input_file, output_folder, args.step)
             if audio_count is not None:
+                # Log end time
+                end_time = datetime.now()
+                duration = (end_time - start_time).total_seconds()
+                log_message(f"Processing completed for {os.path.basename(input_file)}. Duration: {duration:.3f} seconds")
+                
                 print(f"\n{'='*60}")
                 print("PROCESSING COMPLETE")
                 print(f"{'='*60}")
                 
                 if args.step in ['1', 'all']:
                     print(f"Summary saved to: {os.path.join(output_folder, 'summaries')}")
+                    log_message(f"Summary saved to: {os.path.join(output_folder, 'summaries')}")
                 if args.step in ['2', 'all']:
                     print(f"Audio files generated: {audio_count}")
                     print(f"Audio files saved to: {os.path.join(output_folder, 'audio')}")
+                    log_message(f"Audio files generated: {audio_count}")
+                    log_message(f"Audio files saved to: {os.path.join(output_folder, 'audio')}")
                 
                 print(f"\n✅ Processing completed successfully!")
+                log_message("AI Podcaster CLI - Single file processing completed successfully!")
             else:
                 print("❌ Failed to process the file.")
+                log_message("❌ Failed to process the file.")
                 sys.exit(1)
         except Exception as e:
             print(f"Error processing {input_file}: {e}")
+            log_message(f"Error processing {input_file}: {e}")
             sys.exit(1)
     
     else:
@@ -550,16 +620,29 @@ def main():
         for i, file_path in enumerate(markdown_files, 1):
             print(f"\n[{i}/{total_files}] Processing files...")
             try:
+                # Log start time for each file
+                start_time = datetime.now()
+                log_message(f"Processing started for {os.path.basename(file_path)} (Step: {args.step})")
+                
                 audio_count = process_file(file_path, output_folder, folder_name, args.step)
+                
                 if audio_count is not None:
                     successful_files += 1
                     if args.step in ['2', 'all']:
                         total_audio_files += audio_count
+                    
+                    # Log end time for each file
+                    end_time = datetime.now()
+                    duration = (end_time - start_time).total_seconds()
+                    log_message(f"Processing completed for {os.path.basename(file_path)}. Duration: {duration} seconds")
             except KeyboardInterrupt:
                 print("\n\nOperation cancelled by user.")
+                log_message("Operation cancelled by user.")
                 break
             except Exception as e:
-                print(f"Error processing {file_path}: {e}")
+                error_message = f"Error processing {file_path}: {e}"
+                print(error_message)
+                log_message(error_message)
         
         # Summary
         print(f"\n{'='*60}")
@@ -567,18 +650,22 @@ def main():
         print(f"{'='*60}")
         print(f"Total files processed: {successful_files}/{total_files}")
         
+        log_message(f"Batch processing complete: {successful_files}/{total_files} files processed successfully")
+        
         if args.step in ['1', 'all']:
             print(f"Summary files saved to: {os.path.join(output_folder, 'summaries')}")
+            log_message(f"Summary files saved to: {os.path.join(output_folder, 'summaries')}")
         if args.step in ['2', 'all']:
             print(f"Total audio files generated: {total_audio_files}")
             print(f"Audio files saved to: {os.path.join(output_folder, 'audio')}")
+            log_message(f"Total audio files generated: {total_audio_files}")
+            log_message(f"Audio files saved to: {os.path.join(output_folder, 'audio')}")
         
         if successful_files == 0:
             print("No files were successfully processed.")
+            log_message("No files were successfully processed.")
             sys.exit(1)
         
         print("\n✅ Processing completed successfully!")
-
-if __name__ == "__main__":
-    main()
+        log_message("AI Podcaster CLI - Processing completed successfully!")
 
