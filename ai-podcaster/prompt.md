@@ -1,3 +1,20 @@
+# Currently we have only ONE readme.md and it explains the usage of 3 .py
+
+Please make 
+
+`ai_podcaster.md` to explain `ai_podcaster.py`
+
+`ai_spotify.md` to explain `ai_spotify.py`
+
+`ai_podcaster_cli.md` to explain `ai_podcaster_cli.py`
+
+
+The content of the .md files should contains
+- How to use it 
+- Explain the command line options
+- Explain the output files
+
+
 # Add the following metrics
 
 Memory Usage: Peak RAM consumption during inference
