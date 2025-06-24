@@ -96,15 +96,15 @@ Text: {text}
 """
 
 # Initialize the model
-# smollm2:1.7b 
+
 # model = ChatOllama(model="smollm2:1.7b")
 # model = ChatOllama(model="deepseek-r1:1.5b")
-model = ChatOllama(model="deepseek-r1:8b")
+# model = ChatOllama(model="deepseek-r1:8b")
+model = ChatOllama(model="llama3.2")
 
 def count_words(text):
     """Count the number of words in a text string."""
     return len(text.split())
-
 
 def summarize_text_with_length_control(text, max_attempts=1):
     """Generate a summary with a single attempt."""
@@ -497,16 +497,24 @@ Examples:
 
 def main():
     """Main function to orchestrate the CLI workflow."""
+    print("DEBUG: Starting main function")
+    
     # Ensure directories exist
+    print("DEBUG: Ensuring directories exist")
     ensure_directories()
+    print("DEBUG: Directories ensured")
     
     print("AI Podcaster CLI - Processor")
     print("=" * 60)
     
+    print("DEBUG: About to log message")
     log_message("AI Podcaster CLI - Processor started")
+    print("DEBUG: Log message written")
     
     # Parse command line arguments
+    print("DEBUG: Parsing arguments")
     args = parse_arguments()
+    print("DEBUG: Arguments parsed")
     
     # Display step information
     step_descriptions = {
@@ -520,6 +528,7 @@ def main():
     
     # Determine input mode
     if args.input_file:
+        print("DEBUG: Single file mode detected")
         # Single file mode
         input_file = args.input_file
         output_folder = args.output_folder
@@ -547,7 +556,10 @@ def main():
             start_time = datetime.now()
             log_message(f"Processing started for {os.path.basename(input_file)} (Step: {args.step})")
             
+            print("DEBUG: About to call process_single_file")
             audio_count = process_single_file(input_file, output_folder, args.step)
+            print("DEBUG: process_single_file completed")
+            
             if audio_count is not None:
                 # Log end time
                 end_time = datetime.now()
@@ -579,6 +591,7 @@ def main():
             sys.exit(1)
     
     else:
+        print("DEBUG: Folder mode detected")
         # Folder mode (batch processing)
         input_folder = args.input_folder
         output_folder = args.output_folder
@@ -668,4 +681,8 @@ def main():
         
         print("\n✅ Processing completed successfully!")
         log_message("AI Podcaster CLI - Processing completed successfully!")
+
+
+if __name__ == "__main__":
+    main()
 
