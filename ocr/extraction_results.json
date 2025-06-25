@@ -1,0 +1,113 @@
+[
+  {
+    "data": {
+      "invoice_number": "None",
+      "date": "None",
+      "vendor_name": "Stella Campbell Co.",
+      "items": [
+        {
+          "name": "Logo Design Package",
+          "quantity": 1,
+          "price": 550.0
+        },
+        {
+          "name": "Brand Colour Palette",
+          "quantity": 1,
+          "price": 100.0
+        },
+        {
+          "name": "Social Media Graphics",
+          "quantity": 1,
+          "price": 300.0
+        }
+      ],
+      "total": 1476.0
+    },
+    "processing_time": 3.8441007137298584,
+    "image_path": "images/invoice-01.png"
+  },
+  {
+    "data": {
+      "invoice_number": "Invoice 001",
+      "date": "2023-02-20",
+      "vendor_name": "ABC Inc.",
+      "items": [
+        {
+          "name": "Product A",
+          "quantity": 10,
+          "price": 100.0
+        },
+        {
+          "name": "Product B",
+          "quantity": 20,
+          "price": 200.0
+        }
+      ],
+      "total": 5000.0
+    },
+    "processing_time": 32.41901087760925,
+    "image_path": "images/invoice-02.png"
+  },
+  {
+    "data": {
+      "invoice_number": "None",
+      "date": "April 10, 1946",
+      "vendor_name": "Robert Koetter",
+      "items": [
+        {
+          "name": "L. Thorn (Blocks & Bricks)",
+          "quantity": 1,
+          "price": 402.4
+        },
+        {
+          "name": "Jandy Rosmott",
+          "quantity": 1,
+          "price": 59.0
+        },
+        {
+          "name": "Jacobi (2-plyamery)",
+          "quantity": 1,
+          "price": 620.0
+        },
+        {
+          "name": "Alpandy (Gutter & Roofing)",
+          "quantity": 1,
+          "price": 215.0
+        },
+        {
+          "name": "Ast-Libs (Concretes)",
+          "quantity": 1,
+          "price": 178.0
+        },
+        {
+          "name": "Roofing & Concretes",
+          "quantity": 1,
+          "price": 125.0
+        },
+        {
+          "name": "Gormble (Bricklayes)",
+          "quantity": 1,
+          "price": 360.0
+        },
+        {
+          "name": "Day (Material)",
+          "quantity": 1,
+          "price": 532.5
+        },
+        {
+          "name": "Lippe (Caneling Doors & Trims)",
+          "quantity": 1,
+          "price": 701.52
+        },
+        {
+          "name": "Labor",
+          "quantity": 1,
+          "price": 924.0
+        }
+      ],
+      "total": 4024.42
+    },
+    "processing_time": 39.63840413093567,
+    "image_path": "images/invoice-03.png"
+  }
+]
