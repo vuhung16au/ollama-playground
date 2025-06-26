@@ -3,3 +3,4 @@ langchain_core
 langchain_community
 langchain_ollama
 opencv-python
+pytest 
