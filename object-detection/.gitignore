@@ -164,7 +164,8 @@ cython_debug/
 
 # Project-specific
 # Log files (keep the logs directory structure but ignore log files)
-logs/*.log
+
+# logs/*.log
 logs/*.txt
 
 # Temporary files

@@ -88,6 +88,17 @@ All execution details are logged to `logs/object_detection.log`, including:
 - Error details if any issues occur
 - Complete model responses
 
+## Profiling for Performance
+
+```
+2025-06-25 16:55:29,872 - INFO - Starting object detection for image: images/tiger.png
+2025-06-25 16:56:00,392 - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-06-25 16:56:00,393 - INFO - Object detection completed successfully
+2025-06-25 16:56:00,393 - INFO - Execution time: 30.52 seconds
+2025-06-25 16:56:00,393 - INFO - Response: { "objects": [ { "name": "Tiger", "color": ["Orange", "Black"] , "count": 1 } ] }
+```
+30.52 seconds is the total time taken to process the image, including network latency and model inference.
+
 ## Screenshots
 
 ![app object detection](app_object_detection-01.png) 
