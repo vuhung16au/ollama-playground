@@ -4,3 +4,5 @@ langchain-experimental
 langchain-community
 langchain-ollama
 tabulate
+streamlit
+sqlalchemy

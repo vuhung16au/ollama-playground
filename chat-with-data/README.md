@@ -1,14 +1,19 @@
 # Chat with Data using Ollama and LangChain
 
-A Python application that allows you to have natural language conversations with your CSV data using Ollama and LangChain.
+A Python application that allows you to have natural language conversations with your CSV data using Ollama and LangChain. Available in both command-line and web interface versions.
 
 ## Features
 
 - 🤖 Chat with your CSV data using natural language
 - 🚀 Powered by Ollama for local LLM inference
 - 📊 Built with LangChain and Pandas for data analysis
-- 💬 Interactive command-line interface
+- 💬 Available in two versions:
+  - **Command-line interface** (`chat-with-data.py`) - Simple terminal-based interaction
+  - **Web interface** (`app-chat-with-data.py`) - Modern Streamlit web app with GUI
 - 🔒 Runs completely locally - no data sent to external APIs
+- 📁 File upload support (Streamlit version)
+- 💡 Smart sample prompts based on your data structure
+- 📈 Interactive data preview and exploration
 
 ## Prerequisites
 
@@ -83,7 +88,9 @@ ollama pull mistral
 
 ## Usage
 
-### Running the Application
+### Option 1: Command-Line Version (chat-with-data.py)
+
+#### Running the Application
 
 With your virtual environment activated:
 
@@ -91,7 +98,7 @@ With your virtual environment activated:
 python chat-with-data.py
 ```
 
-### Example Interaction
+#### Example Interaction
 
 ```text
 🚀 Starting CSV Chat with Ollama (mistral) 🚀
@@ -107,6 +114,78 @@ DataFrame head:
 Your question (or 'exit'/'quit'): What are the top 5 best-selling products?
 ```
 
+### Option 2: Streamlit Web Interface (app-chat-with-data.py)
+
+#### For Developers: Installation
+
+If you're setting up the development environment, follow the setup instructions above, then install Streamlit:
+
+```bash
+# Activate your virtual environment first
+source .venv/bin/activate  # On macOS/Linux
+# or
+.venv\Scripts\activate     # On Windows
+
+# Install all dependencies (including Streamlit)
+pip install -r requirements.txt
+```
+
+#### For Users: Running the Web App
+
+1. **Start Ollama server** (in one terminal):
+
+   ```bash
+   ollama serve
+   ```
+
+2. **Pull your desired model** (in another terminal):
+
+   ```bash
+   ollama pull mistral
+   ```
+
+3. **Launch the Streamlit app**:
+
+   ```bash
+   streamlit run app-chat-with-data.py
+   ```
+
+4. **Open your browser** to the URL shown (typically `http://localhost:8501`)
+
+#### Streamlit App Features
+
+**🎨 Modern Web Interface:**
+
+- Clean, intuitive design with responsive layout
+- Sidebar configuration panel
+- Real-time status indicators
+
+**📁 Flexible Data Loading:**
+
+- Drag-and-drop CSV file upload
+- One-click sample data loading (OnlineRetail.csv)
+- Automatic data preview and structure analysis
+
+**💡 Smart Sample Prompts:**
+
+- Automatically generated prompts based on your data columns
+- Generic prompts that work with any dataset
+- Dataset-specific prompts (e.g., for retail data)
+- Click-to-use prompt buttons
+
+**🤖 Model Configuration:**
+
+- Select from multiple Ollama models (mistral, llama2, codellama, gemma)
+- Real-time model switching
+- Setup instructions in the sidebar
+
+**💬 Enhanced Chat Experience:**
+
+- Beautiful chat history display
+- Copy-paste friendly responses
+- Clear chat functionality
+- Error handling with helpful suggestions
+
 ### Sample Questions You Can Ask
 
 - "What are the top 5 best-selling products?"
@@ -119,18 +198,22 @@ Your question (or 'exit'/'quit'): What are the top 5 best-selling products?
 ## Project Structure
 
 ```text
-chat-with-csv/
-├── chat-with-data.py    # Main application script
-├── requirements.txt     # Python dependencies
-├── README.md           # This file
-├── .venv/              # Virtual environment (created during setup)
-└── your-data.csv       # Your CSV file
+chat-with-data/
+├── chat-with-data.py       # Command-line version
+├── app-chat-with-data.py   # Streamlit web interface version
+├── requirements.txt        # Python dependencies (includes Streamlit)
+├── README.md              # This file
+├── .venv/                 # Virtual environment (created during setup)
+├── data/                  # Data directory
+│   └── OnlineRetail.csv   # Sample dataset
+└── chat-with-data.png     # Screenshot
 ```
 
 ## Configuration
 
 ### Changing the Model
 
+**Command-line version:**
 To use a different Ollama model, modify the `model_name` parameter in the `chat_with_csv()` function call at the bottom of `chat-with-data.py`:
 
 ```python
@@ -139,8 +222,12 @@ if __name__ == "__main__":
     chat_with_csv(csv_file, model_name="llama2")  # Change model here
 ```
 
+**Streamlit version:**
+Simply select a different model from the dropdown in the sidebar. The app will reinitialize with the new model automatically.
+
 ### Using a Different CSV File
 
+**Command-line version:**
 Update the `csv_file` variable in the main section:
 
 ```python
@@ -148,6 +235,9 @@ if __name__ == "__main__":
     csv_file = "path/to/your/file.csv"  # Update this path
     chat_with_csv(csv_file, model_name="mistral")
 ```
+
+**Streamlit version:**
+Use the file uploader in the web interface to select any CSV file from your computer.
 
 ## Troubleshooting
 
@@ -157,7 +247,7 @@ if __name__ == "__main__":
    - Ensure Ollama is installed and running (`ollama serve`)
    - Verify the model is pulled (`ollama pull mistral`)
 
-2. **CSV file not found**
+2. **CSV file not found (Command-line version)**
    - Check the file path in the script
    - Ensure the CSV file is in the correct directory
 
@@ -169,6 +259,21 @@ if __name__ == "__main__":
    - The script uses `allow_dangerous_code=True` for pandas operations
    - This is necessary for the agent to execute data analysis code
 
+5. **Streamlit app won't start**
+   - Check if port 8501 is already in use
+   - Try running: `streamlit run app-chat-with-data.py --server.port 8502`
+
+6. **File upload issues in Streamlit**
+   - Ensure your CSV file is properly formatted
+   - Check that the file size is reasonable (< 200MB recommended)
+   - Try refreshing the page if upload seems stuck
+
+### Performance Tips
+
+- **For large datasets**: Consider using a subset of your data for faster processing
+- **Model selection**: Smaller models (like mistral) are faster but may be less accurate
+- **Streamlit performance**: Clear chat history periodically to maintain responsiveness
+
 ### Getting Help
 
 If you encounter issues:
@@ -177,6 +282,7 @@ If you encounter issues:
 2. Ensure your virtual environment is activated
 3. Verify Ollama is running and the model is available
 4. Check the error messages for specific guidance
+5. For Streamlit issues, check the terminal output for detailed error messages
 
 ## Deactivating Virtual Environment
 
@@ -191,6 +297,25 @@ This will return you to your system's default Python environment.
 ## Security Note
 
 This application executes code generated by the LLM to analyze your data. While it runs locally and doesn't send data externally, be cautious when using it with sensitive data. The `allow_dangerous_code=True` parameter is required for the pandas agent to function but should be used responsibly.
+
+## Quick Start Guide
+
+### For End Users (Recommended: Streamlit Version)
+
+1. **Install Ollama**: Download from [ollama.ai](https://ollama.ai/)
+2. **Start Ollama**: `ollama serve`
+3. **Pull a model**: `ollama pull mistral`
+4. **Clone/download this project**
+5. **Install dependencies**: `pip install -r requirements.txt`
+6. **Run the app**: `streamlit run app-chat-with-data.py`
+7. **Open browser**: Go to `http://localhost:8501`
+8. **Upload your CSV** and start chatting!
+
+### For Developers (Command-line Version)
+
+1. Follow setup instructions above
+2. **Run**: `python chat-with-data.py`
+3. **Modify** the script to point to your CSV file
 
 ## Screenshots
 
