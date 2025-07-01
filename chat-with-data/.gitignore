@@ -215,7 +215,7 @@ $RECYCLE.BIN/
 *.lnk
 
 # CSV data files (optional - remove if you want to track specific CSV files)
-*.csv
+# *.csv
 !example.csv
 !sample.csv
 
