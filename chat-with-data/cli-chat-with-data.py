@@ -8,6 +8,20 @@ import os
 import sqlite3
 from abc import ABC, abstractmethod
 from typing import Union, Any
+import logging
+import time
+from datetime import datetime
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('chat_with_data.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 class DataSource(ABC):
     """Abstract base class for different data sources."""
@@ -37,10 +51,17 @@ class CSVDataSource(DataSource):
     
     def load_data(self):
         """Load CSV data into a pandas DataFrame."""
+        logger.info(f"Loading CSV data from: {self.file_path}")
+        start_time = time.time()
+        
         if not os.path.exists(self.file_path):
             raise FileNotFoundError(f"The file '{self.file_path}' was not found.")
         
         self.df = pd.read_csv(self.file_path)
+        
+        load_time = time.time() - start_time
+        logger.info(f"CSV data loaded successfully in {load_time:.3f} seconds")
+        
         return self.df
     
     def create_agent(self, llm):
@@ -48,6 +69,7 @@ class CSVDataSource(DataSource):
         if self.df is None:
             raise ValueError("Data not loaded. Call load_data() first.")
         
+        logger.info("Creating pandas DataFrame agent")
         return create_pandas_dataframe_agent(
             llm, 
             self.df, 
@@ -80,6 +102,9 @@ class SQLiteDataSource(DataSource):
     
     def load_data(self):
         """Load SQLite database connection."""
+        logger.info(f"Loading SQLite database from: {self.db_path}")
+        start_time = time.time()
+        
         if not os.path.exists(self.db_path):
             raise FileNotFoundError(f"The database '{self.db_path}' was not found.")
         
@@ -109,6 +134,10 @@ class SQLiteDataSource(DataSource):
             }
         
         conn.close()
+        
+        load_time = time.time() - start_time
+        logger.info(f"SQLite database loaded successfully in {load_time:.3f} seconds")
+        
         return self.db
     
     def create_agent(self, llm):
@@ -116,6 +145,7 @@ class SQLiteDataSource(DataSource):
         if self.db is None:
             raise ValueError("Database not loaded. Call load_data() first.")
         
+        logger.info("Creating SQL agent")
         return create_sql_agent(
             llm,
             db=self.db,
@@ -146,8 +176,10 @@ def choose_data_source():
         choice = input("Please choose a data source (1 or 2): ").strip()
         
         if choice == "1":
+            logger.info("User selected CSV data source")
             return CSVDataSource("data/OnlineRetail.csv")
         elif choice == "2":
+            logger.info("User selected SQLite data source")
             return SQLiteDataSource("data/OnlineRetail.db")
         else:
             print("Invalid choice. Please enter 1 or 2.")
@@ -163,6 +195,7 @@ def chat_with_data(data_source: DataSource, model_name: str = "mistral"):
     """
     print(f"🚀 Starting Data Chat with Ollama ({model_name}) 🚀")
     print("-" * 50)
+    logger.info(f"Starting chat session with model: {model_name}")
 
     # 1. Load the data source
     try:
@@ -173,15 +206,18 @@ def chat_with_data(data_source: DataSource, model_name: str = "mistral"):
             if info["type"] == "CSV":
                 print(f"Successfully loaded CSV '{info['file_path']}' with {info['rows']} rows and {info['columns']} columns.")
                 print("DataFrame columns:", ", ".join(info['column_names']))
+                logger.info(f"CSV loaded: {info['rows']} rows, {info['columns']} columns")
             elif info["type"] == "SQLite":
                 print(f"Successfully loaded SQLite database '{info['db_path']}'")
                 for table_name, table_info in info['tables'].items():
                     print(f"  Table '{table_name}': {table_info['row_count']} rows, columns: {', '.join(table_info['columns'])}")
+                logger.info(f"SQLite database loaded with {len(info['tables'])} tables")
         else:
             print(info)
         
         print("-" * 50)
     except Exception as e:
+        logger.error(f"Error loading data source: {e}")
         print(f"Error loading data source: {e}")
         return
 
@@ -189,7 +225,9 @@ def chat_with_data(data_source: DataSource, model_name: str = "mistral"):
     try:
         llm = OllamaLLM(model=model_name)
         print(f"Ollama LLM initialized with model: {model_name}")
+        logger.info(f"Ollama LLM initialized successfully")
     except Exception as e:
+        logger.error(f"Error initializing Ollama LLM: {e}")
         print(f"Error initializing Ollama LLM. Make sure Ollama server is running and '{model_name}' model is pulled. Error: {e}")
         return
 
@@ -200,39 +238,65 @@ def chat_with_data(data_source: DataSource, model_name: str = "mistral"):
         print("You can now ask questions about your data!")
         print("Type 'exit' or 'quit' to end the session.")
         print("-" * 50)
+        logger.info("Agent created successfully")
     except Exception as e:
+        logger.error(f"Error creating agent: {e}")
         print(f"Error creating agent: {e}")
         return
 
     # 4. Start the interactive questioning loop
+    question_count = 0
     while True:
         question = input("Your question (or 'exit'/'quit'): ")
         if question.lower() in ["exit", "quit"]:
             print("Exiting Data Chat. Goodbye!")
+            logger.info(f"Chat session ended. Total questions processed: {question_count}")
             break
 
         if not question.strip():
             print("Please enter a question.")
             continue
 
+        question_count += 1
+        logger.info(f"Processing question #{question_count}: {question}")
+        
         try:
             print(f"\nThinking about your question: '{question}'...")
+            
+            # Start timing the prompt execution
+            prompt_start_time = time.time()
+            
             # Invoke the agent with the user's question
             response = agent.invoke({"input": question})
+            
+            # Calculate execution time
+            prompt_execution_time = time.time() - prompt_start_time
+            
             print("\n" + "=" * 10 + " Answer " + "=" * 10)
             print(response.get('output', 'No output found.'))
-            print("=" * 28 + "\n")
+            print("=" * 28)
+            print(f"prompt execution time: {prompt_execution_time:.3f} seconds\n")
+            
+            # Log the execution details
+            logger.info(f"Question #{question_count} processed successfully in {prompt_execution_time:.3f} seconds")
+            
         except Exception as e:
+            logger.error(f"Error processing question #{question_count}: {e}")
             print(f"An error occurred while processing your question: {e}")
             print("Please try rephrasing your question or check the Ollama server status.")
 
 if __name__ == "__main__":
     # Choose data source interactively
     try:
+        logger.info("Application started")
         data_source = choose_data_source()
         # Run the chat function
         chat_with_data(data_source, model_name="mistral")
     except KeyboardInterrupt:
+        logger.info("Application interrupted by user")
         print("\nExiting. Goodbye!")
     except Exception as e:
+        logger.error(f"Unexpected error: {e}")
         print(f"An error occurred: {e}")
+    finally:
+        logger.info("Application ended")

@@ -460,4 +460,9 @@ Use responsibly with sensitive data.
 
 ## Screenshots
 
+### CLI Version
 ![chat with data](chat-with-data.png)
+
+### Streamlit Version
+
+![streamlit version - chat with data](streamlit-chat-with-data.png)
