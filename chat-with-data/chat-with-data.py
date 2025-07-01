@@ -1,6 +1,6 @@
 # Import necessary libraries
 import pandas as pd
-from langchain_community.llms import Ollama
+from langchain_ollama import OllamaLLM
 from langchain_experimental.agents import create_pandas_dataframe_agent
 import os
 
@@ -33,7 +33,7 @@ def chat_with_csv(file_path: str, model_name: str = "mistral"):
     # 2. Initialize the Ollama LLM
     # Ensure Ollama server is running and the specified model is pulled.
     try:
-        llm = Ollama(model=model_name)
+        llm = OllamaLLM(model=model_name)
         print(f"Ollama LLM initialized with model: {model_name}")
     except Exception as e:
         print(f"Error initializing Ollama LLM. Make sure Ollama server is running and '{model_name}' model is pulled. Error: {e}")

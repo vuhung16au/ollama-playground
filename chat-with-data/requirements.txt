@@ -2,4 +2,5 @@ pandas
 langchain
 langchain-experimental
 langchain-community
+langchain-ollama
 tabulate
