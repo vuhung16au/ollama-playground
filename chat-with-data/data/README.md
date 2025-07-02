@@ -1,0 +1,1 @@
+The data source can be obtained from https://www.kaggle.com/code/vuhunghn/customer-segmentation-and-market-basket-analysis
