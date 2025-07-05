@@ -90,6 +90,7 @@ class ResearchStateInput(TypedDict):
 class ResearchStateOutput(TypedDict):
     sources: list[str]
     response: str
+    step_metrics: dict[str, dict]
 
 def search_web(state: ResearchState):
     start_time = time.time()

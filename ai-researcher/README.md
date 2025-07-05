@@ -11,6 +11,12 @@ Install Ollama on your local machine from the [official website](https://ollama.
 ollama pull deepseek-r1:8b
 ```
 
+Other models can be used: 
+
+- `magistral`
+- `phi4-mini-reasoning`
+- `qwen3:8b`
+
 Create a virtual environment and install the dependencies:
 
 ```bash
