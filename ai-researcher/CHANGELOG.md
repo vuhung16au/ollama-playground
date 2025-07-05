@@ -2,6 +2,62 @@
 
 All notable changes to the AI Researcher project will be documented in this file.
 
+## [0.4.0] - 2025-01-XX
+
+### Added
+
+- 🎨 **3-Column Layout UI** - Complete redesign with left control panel, middle content area, and right metrics dashboard
+- 🤖 **Multi-Model Support** - Dropdown selection for different AI models (DeepSeek R1, Qwen 2.5, Gemma, Magistral)
+- 📊 **Real-Time Performance Metrics** - Live token counting, processing speed, and step-by-step performance tracking
+- 🔍 **Enhanced Progress Tracking** - Visual progress indicators with running animations and step completion status
+- 📈 **Advanced Metrics Dashboard** - Comprehensive performance analytics with detailed breakdowns
+- 📚 **Research History System** - Session tracking with query history and performance comparison
+- 🔧 **Export Functionality** - JSON, Markdown, and CSV export options for research results
+- 📋 **Content Analysis Features** - Search quality analysis, content insights, and source reliability scoring
+- 🎯 **Quick Actions Panel** - Clear results, view logs, and suggested queries functionality
+
+### Enhanced
+
+- 🎨 **Improved User Experience**
+  - Clean 3-column layout with intuitive navigation
+  - Real-time progress indicators with visual feedback
+  - Enhanced typography and spacing throughout the interface
+  - Collapsible sections for better organization
+
+- 📊 **Performance Monitoring**
+  - Step-by-step token counting and timing
+  - Tokens per second calculations for each processing step
+  - Comprehensive performance summary tables
+  - Real-time metrics display in the dashboard
+
+- 🔍 **Search & Analysis**
+  - Enhanced search quality analysis with relevance scoring
+  - Content insights with keyword extraction and source reliability
+  - Improved content processing pipeline
+  - Better error handling and user feedback
+
+### Technical Improvements
+
+- 🏗️ **Architecture Enhancements**
+  - Modular function design for better maintainability
+  - Enhanced state management with performance tracking
+  - Improved logging system with detailed step metrics
+  - Better separation of concerns across components
+
+- 📦 **Dependencies & Compatibility**
+  - Graceful pandas import handling for optional features
+  - Enhanced error handling for missing dependencies
+  - Improved environment variable management
+
+### Features from Backlog
+
+- ✅ **Model Selection** - Users can now choose from multiple AI models via dropdown
+- ✅ **Performance Tracking** - Real-time token counting and processing speed metrics
+- ✅ **Progress Visualization** - Visual progress indicators with running animations
+- ✅ **Enhanced Logging** - Comprehensive logging to both console and file
+- ✅ **Research History** - Session tracking and comparison features
+- ✅ **Export Capabilities** - Multiple export formats for research results
+
 ## [Unreleased] - 2025-07-05
 
 ### Added
@@ -152,6 +208,14 @@ The AI Researcher is built as a multi-stage processing pipeline:
 - **Resource Usage**: Balanced CPU and memory utilization
 - **Scalability**: Single-user focused with potential for multi-user scaling
 
+### UI/UX Improvements
+
+The latest version (0.4.0) introduces a comprehensive 3-column layout:
+
+- **Left Column (25%)**: Control Panel with query input, model selection, settings, and quick actions
+- **Middle Column (50%)**: Main content area with research results, progress tracking, and detailed analysis
+- **Right Column (25%)**: Metrics Dashboard with real-time performance data and system information
+
 ### Future Roadmap
 
 Based on the current backlog, planned improvements include:
@@ -160,6 +224,7 @@ Based on the current backlog, planned improvements include:
 - Enhanced performance metrics and analytics
 - Progress visualization improvements
 - Extended documentation and user guides
+- Additional export formats and sharing capabilities
 
 ---
 

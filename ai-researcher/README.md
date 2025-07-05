@@ -1,6 +1,18 @@
 # AI Researcher
 
-A simple AI Agent using Deepseek, LangGraph, and Streamlit to find results from the web that matches the user's query and give a summarized answer based on those results.
+A comprehensive AI-powered research assistant that combines web search, content analysis, and intelligent summarization to provide detailed research results. Built with Deepseek, LangGraph, and Streamlit, it offers a modern web interface with real-time performance tracking, multiple AI model support, and advanced analytics.
+
+## Key Features
+
+- 🔍 **Advanced Web Search** - Intelligent search across multiple sources using Tavily API
+- 📊 **Content Analysis & Summarization** - AI-powered content processing and insights
+- ⚡ **Performance Tracking** - Real-time metrics and optimization monitoring
+- 🤖 **Multiple AI Models** - Support for Deepseek, Qwen, Gemma, and Magistral models
+- 📈 **Metrics Dashboard** - Comprehensive performance and quality analytics
+- 📚 **Research History** - Track and revisit previous searches with detailed comparisons
+- 🎨 **Modern UI** - Three-column layout with control panel, results, and metrics
+- 📤 **Export Capabilities** - Export results in JSON, Markdown, and CSV formats
+- 🔧 **Debug Information** - Detailed logging and debugging tools
 
 
 ## Pre-requisites
