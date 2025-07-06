@@ -1,8 +1,8 @@
-# AI Researcher - Refactored Modular Structure
+# ResearchGPT - Refactored Modular Structure
 
 ## Overview
 
-The AI Researcher application has been successfully refactored from a monolithic 994-line file into a clean, modular architecture with 8 focused modules.
+The ResearchGPT application has been successfully refactored from a monolithic 994-line file into a clean, modular architecture with 8 focused modules.
 
 ## New File Structure
 

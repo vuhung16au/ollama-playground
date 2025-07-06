@@ -1,8 +1,8 @@
-# AI Researcher Refactoring Summary
+# ResearchGPT Refactoring Summary
 
 ## ✅ Refactoring Complete
 
-The AI Researcher application has been successfully refactored from a monolithic 994-line file into a clean, modular architecture.
+The ResearchGPT application has been successfully refactored from a monolithic 994-line file into a clean, modular architecture.
 
 ## 📊 Results
 

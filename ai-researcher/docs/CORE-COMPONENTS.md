@@ -1,6 +1,6 @@
-# Core Components of AI Researcher
+# Core Components of ResearchGPT
 
-This document explains the main components and their roles in the AI Researcher application, which is a web-based AI agent that searches the web for information and provides summarized answers based on user queries.
+This document explains the main components and their roles in the ResearchGPT application, which is a web-based AI agent that searches the web for information and provides summarized answers based on user queries.
 
 ## 1. LangGraph for State Management
 
@@ -68,7 +68,7 @@ search_results = search.invoke(state["query"])
 - Clean, minimal user interface
 
 **Interface Elements**:
-- Title: "AI Researcher"
+- Title: "ResearchGPT"
 - Text input field for queries
 - Response display area
 - Sources section with clickable links

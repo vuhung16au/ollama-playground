@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the AI Researcher project will be documented in this file.
+All notable changes to the ResearchGPT project will be documented in this file.
 
 ## [0.4.0] - 2025-01-XX
 
@@ -140,7 +140,7 @@ All notable changes to the AI Researcher project will be documented in this file
 
 ### Core Application
 
-- 🎯 **Core AI Researcher Application**
+- 🎯 **Core ResearchGPT Application**
   - Web-based research agent using Deepseek R1 model
   - Integration with LangGraph for state management
   - Tavily web search integration for real-time information retrieval
@@ -194,7 +194,7 @@ All notable changes to the AI Researcher project will be documented in this file
 
 ### Current Architecture
 
-The AI Researcher is built as a multi-stage processing pipeline:
+The ResearchGPT is built as a multi-stage processing pipeline:
 
 1. **🔍 Search Phase**: Web search using Tavily API with 3-source limitation
 2. **📊 Analysis Phase**: Content processing and relevance filtering
@@ -228,4 +228,4 @@ Based on the current backlog, planned improvements include:
 
 ---
 
-*This changelog is automatically maintained and reflects all significant changes to the AI Researcher project.*
+*This changelog is automatically maintained and reflects all significant changes to the ResearchGPT project.*

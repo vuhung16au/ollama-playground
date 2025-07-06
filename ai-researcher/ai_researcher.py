@@ -9,12 +9,12 @@ from ai_researcher_ui import (
 )
 
 # Set page config for wide layout
-st.set_page_config(page_title="AI Researcher", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="ResearchGPT", layout="wide", initial_sidebar_state="collapsed")
 
-st.title("🔬 AI Researcher")
+st.title("🔬 ResearchGPT")
 
-# Create 3-column layout
-left_col, middle_col, right_col = st.columns([25, 50, 25])
+# Create 2-column layout (remove right column)
+left_col, middle_col = st.columns([25, 75])
 
 # ====== LEFT COLUMN - Control Panel ======
 with left_col:
@@ -32,8 +32,7 @@ with middle_col:
     research_container = st.container()
 
 # ====== RIGHT COLUMN - Metrics Dashboard ======
-with right_col:
-    metrics_container = render_metrics_dashboard()
+# (Removed)
 
 # Process research in the middle column
 with middle_col:

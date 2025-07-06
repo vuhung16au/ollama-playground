@@ -2,7 +2,7 @@ import streamlit as st
 
 def render_welcome_message():
     """Render the welcome message when no query is entered."""
-    st.info("👋 Welcome to AI Researcher! Enter your query in the left panel to get started.")
+    st.info("👋 Welcome to ResearchGPT! Enter your query in the left panel to get started.")
     st.markdown("""
     ### Features:
     - 🔍 **Advanced Web Search** - Find relevant information from multiple sources

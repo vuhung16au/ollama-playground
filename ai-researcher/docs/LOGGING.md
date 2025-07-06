@@ -1,7 +1,7 @@
-# AI Researcher - Logging and Performance Monitoring
+# ResearchGPT - Logging and Performance Monitoring
 
 ## Overview
-The AI Researcher application now includes comprehensive logging and performance monitoring features that track token processing, timing, and performance metrics for each step of the research process.
+The ResearchGPT application now includes comprehensive logging and performance monitoring features that track token processing, timing, and performance metrics for each step of the research process.
 
 ## Features
 

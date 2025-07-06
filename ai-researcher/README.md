@@ -1,4 +1,4 @@
-# AI Researcher
+# ResearchGPT
 
 A comprehensive AI-powered research assistant that combines web search, content analysis, and intelligent summarization to provide detailed research results. Built with Deepseek, LangGraph, and Streamlit, with real-time performance tracking, multiple AI model support, and advanced profiling.
 
@@ -69,5 +69,5 @@ streamlit run ai_researcher.py
 
 ## Screenshots
 
-![AI Researcher Screenshot](images/ai_researcher.png)
+![ResearchGPT Screenshot](images/ai_researcher.png)
 

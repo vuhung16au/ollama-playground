@@ -1,3 +1,17 @@
+
+# Change the name of the app 
+
+Current name: ResearchGPT
+New name: ResearchGPT
+
+Pls change the name, references in 
+- all markdown files
+- all streamlit UI files 
+
+Note:
+- Don't change the codebase, just the name
+- Don't change names of the variables, constants, functions, classes, etc.
+
 # Refactor `ai_researcher_ui.py`, the file is too big 
 
 - Split the file into smaller files
@@ -69,7 +83,7 @@ Assume that pandas is available, if not, then quit the app.
                 csv_string += f'"{query}","{datetime.now().isoformat()}","{model_used}",{len(response_state["sources"])},{len(str(response_state["response"]))},{total_time},{sum(step["total_tokens"] for step in response_state.get("step_metrics", {}).values())}'
 ```
 
-# Implementation of a 3-Column Layout for the AI Researcher App
+# Implementation of a 3-Column Layout for the ResearchGPT App
 
 Current UI/UX is basic and needs enhancements:
 - Only 1 (or 2) column layout
