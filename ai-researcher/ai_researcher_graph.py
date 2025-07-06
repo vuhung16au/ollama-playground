@@ -90,10 +90,13 @@ def summarize_results(state: ResearchState):
         "tokens_per_second": tokens_per_second
     }
 
-    return {
+    # Merge previous state to preserve sources/web_results
+    result = {
         "summarized_results": summarized_results,
         "step_metrics": step_metrics
     }
+    result.update({k: v for k, v in state.items() if k not in result})
+    return result
 
 def generate_response(state: ResearchState):
     """Generate the final research response."""
@@ -131,10 +134,13 @@ def generate_response(state: ResearchState):
         "tokens_per_second": tokens_per_second
     }
     
-    return {
+    # Merge previous state to preserve sources/web_results/summarized_results
+    result = {
         "response": response,
         "step_metrics": step_metrics
     }
+    result.update({k: v for k, v in state.items() if k not in result})
+    return result
 
 def create_research_graph():
     """Create and return the compiled research workflow graph."""

@@ -18,6 +18,8 @@ class ResearchStateInput(TypedDict):
 class ResearchStateOutput(TypedDict):
     """Output state for the research workflow"""
     sources: List[str]
+    web_results: List[str]
+    summarized_results: List[str]
     response: str
     step_metrics: Dict[str, Dict[str, Any]]
 
