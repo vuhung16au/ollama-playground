@@ -1,3 +1,63 @@
+# Unit test 
+
+- Unit test the code
+- Use the `pytest` framework
+- Use the `unittest` framework
+
+```
+ai-researcher/
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py                    # pytest configuration and fixtures
+│   ├── test_utils.py                  # Test utility functions
+│   ├── test_models.py                 # Test data models
+│   ├── test_graph.py                  # Test LangGraph workflow
+│   ├── test_analytics.py              # Test analytics functions
+│   ├── test_export.py                 # Test export functionality
+│   ├── test_config.py                 # Test configuration
+│   └── test_integration.py            # Integration tests
+├── test_requirements.txt              # Test dependencies
+└── pytest.ini                        # pytest configuration
+```
+
+# Compare our code with Grok's deep research & Gemini's deep research
+
+# Refactor the code 
+
+Issue: `ai_researcher.py` is too long and needs to be refactored.
+
+```
+ai-researcher/
+├── ai_researcher.py              # Main application file
+├── ai_researcher_config.py       # Configuration and constants
+├── ai_researcher_utils.py        # Utility functions
+├── ai_researcher_models.py       # Data models and types
+├── ai_researcher_graph.py        # LangGraph workflow
+├── ai_researcher_ui.py          # Streamlit UI components
+├── ai_researcher_analytics.py    # Analytics and metrics functions
+└── ai_researcher_export.py       # Export functionality
+```
+
+# Try with bigger models 
+
+# Try with bigger window sizes 
+
+
+# Use pandas to create CSV file
+
+Assume that pandas is available, if not, then quit the app.
+
+```
+            if PANDAS_AVAILABLE: -> don't check for pandas, just use it
+                import pandas as pd
+                csv_df = pd.DataFrame(csv_data)
+                csv_string = csv_df.to_csv(index=False)
+            else:
+                # Fallback CSV creation without pandas
+                csv_string = "Query,Timestamp,Model,Sources_Count,Response_Length,Total_Time,Total_Tokens\n"
+                csv_string += f'"{query}","{datetime.now().isoformat()}","{model_used}",{len(response_state["sources"])},{len(str(response_state["response"]))},{total_time},{sum(step["total_tokens"] for step in response_state.get("step_metrics", {}).values())}'
+```
+
 # Implementation of a 3-Column Layout for the AI Researcher App
 
 Current UI/UX is basic and needs enhancements:

@@ -16,13 +16,7 @@ from langchain_ollama import ChatOllama
 from langgraph.graph import START, END, StateGraph
 from typing_extensions import TypedDict
 
-# Try to import pandas, handle gracefully if not available
-try:
-    import pandas as pd
-    PANDAS_AVAILABLE = True
-except ImportError:
-    PANDAS_AVAILABLE = False
-    st.warning("Pandas not available. Some features may be limited.")
+import pandas as pd
 import time
 import logging
 from datetime import datetime
@@ -881,10 +875,6 @@ def display_research_history():
     history = st.session_state['research_history']
     
     # Create DataFrame for analysis
-    if not PANDAS_AVAILABLE:
-        st.error("Pandas not available. Cannot display detailed history analysis.")
-        return
-    
     import pandas as pd
     df = pd.DataFrame(history)
     df['timestamp'] = pd.to_datetime(df['timestamp'])
@@ -992,14 +982,9 @@ def export_research_data(response_state, query, model_used, total_time):
                 "Total_Tokens": [sum(step['total_tokens'] for step in response_state.get('step_metrics', {}).values())]
             }
             
-            if PANDAS_AVAILABLE:
-                import pandas as pd
-                csv_df = pd.DataFrame(csv_data)
-                csv_string = csv_df.to_csv(index=False)
-            else:
-                # Fallback CSV creation without pandas
-                csv_string = "Query,Timestamp,Model,Sources_Count,Response_Length,Total_Time,Total_Tokens\n"
-                csv_string += f'"{query}","{datetime.now().isoformat()}","{model_used}",{len(response_state["sources"])},{len(str(response_state["response"]))},{total_time},{sum(step["total_tokens"] for step in response_state.get("step_metrics", {}).values())}'
+            import pandas as pd
+            csv_df = pd.DataFrame(csv_data)
+            csv_string = csv_df.to_csv(index=False)
             
             st.download_button(
                 label="💾 Download CSV",
