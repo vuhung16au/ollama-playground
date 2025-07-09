@@ -17,7 +17,7 @@ res = ollama.chat(
              emotions as scores between 0 and 1.
              The emotions are: happiness, sadness, anger, fear, surprise, disgust, and neutral.
             """,
-            'images': ['images/your_file.jpg']
+            'images': ['images/happy.png']
         }
     ],
     format=EmotionResponse.model_json_schema(),

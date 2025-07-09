@@ -10,6 +10,15 @@ Install Ollama on your local machine from the [official website](https://ollama.
 ollama pull deepseek-r1:8b
 ```
 
+Create and activate a virtual environment named '.venv':
+
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On macOS/Linux
+# or
+# .venv\Scripts\activate  # On Windows
+```
+
 Install the dependencies using pip:
 
 ```bash
@@ -17,6 +26,7 @@ pip install -r requirements.txt
 ```
 
 # Run
+
 Run the Streamlit app:
 
 ```bash
