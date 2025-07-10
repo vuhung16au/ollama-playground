@@ -9,13 +9,16 @@ from langchain_ollama.llms import OllamaLLM
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 template = """
-You are an assistant for question-answering tasks. Use the following pieces of retrieved context to answer the question. If you don't know the answer, just say that you don't know. Use three sentences maximum and keep the answer concise.
+You are an assistant for question-answering tasks. 
+Use the following pieces of retrieved context to answer the question. 
+If you don't know the answer, just say that you don't know. 
+Use three sentences maximum and keep the answer concise.
 Question: {question} 
 Context: {context} 
 Answer:
 """
 
-audios_directory = 'voice-rag/audios/'
+audios_directory = 'audios/'
 
 embeddings = OllamaEmbeddings(model="deepseek-r1:8b")
 vector_store = InMemoryVectorStore(embeddings)
